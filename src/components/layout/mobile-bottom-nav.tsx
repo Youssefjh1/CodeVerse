@@ -15,7 +15,10 @@ import {
 } from "@/components/layout/navigation-config";
 import { cn } from "@/lib/utils";
 
-const MOBILE_ICON_MAP: Record<Exclude<NavIconName, "ShieldCheck">, typeof LayoutDashboard> = {
+const MOBILE_ICON_MAP: Record<
+  Exclude<NavIconName, "ShieldCheck" | "Sparkles" | "Ticket">,
+  typeof LayoutDashboard
+> = {
   LayoutDashboard,
   Terminal,
   Swords,
@@ -35,7 +38,12 @@ export function MobileBottomNav() {
       <div className="grid grid-cols-5 gap-1">
         {tabs.map((tab) => {
           const Icon =
-            MOBILE_ICON_MAP[tab.iconName as Exclude<NavIconName, "ShieldCheck">];
+            MOBILE_ICON_MAP[
+              tab.iconName as Exclude<
+                NavIconName,
+                "ShieldCheck" | "Sparkles" | "Ticket"
+              >
+            ];
           const isActive =
             pathname === tab.href || pathname.startsWith(`${tab.href}/`);
 

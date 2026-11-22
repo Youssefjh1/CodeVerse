@@ -99,7 +99,7 @@ export function QuickLaunchCards({
         <div className="mt-4 flex items-center justify-between gap-2 border-t border-white/10 pt-4">
           <span className="inline-flex items-center gap-1 text-xs text-slate-muted">
             <Sparkles className="h-3.5 w-3.5 text-cyber-cyan" />
-            جاهز للتنفيذ قريباً
+            نفّذ الكود خطوة بخطوة
           </span>
           <CyberButton href="/playground" variant="cyan" size="sm">
             افتح محرر الكود

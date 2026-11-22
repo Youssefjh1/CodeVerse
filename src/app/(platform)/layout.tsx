@@ -3,6 +3,8 @@ import type { ReactNode } from "react";
 import { PlatformShell } from "@/components/layout/platform-shell";
 import { getCachedShellData } from "@/lib/data/request-cache";
 
+export const dynamic = "force-dynamic";
+
 export default async function PlatformLayout({
   children,
 }: {

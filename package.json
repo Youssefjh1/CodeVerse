@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "postinstall": "node scripts/sync-monaco.mjs",
+    "predev": "node scripts/sync-monaco.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/sync-monaco.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -11,11 +14,14 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@google/genai": "^3.6.1",
+    "@monaco-editor/react": "^4.7.0",
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.49.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.4.7",
     "lucide-react": "^0.475.0",
+    "monaco-editor": "^0.52.2",
     "next": "^15.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

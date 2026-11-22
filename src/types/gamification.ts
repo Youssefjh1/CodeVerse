@@ -124,6 +124,7 @@ export interface UserSession {
   userId: string;
   fullName: string;
   email: string;
+  phone?: string;
   grade: GradeTier;
   role: UserRole;
   avatarFrame: AvatarFrameId;

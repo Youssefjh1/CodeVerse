@@ -30,10 +30,15 @@ function writeDemoCookieValue(
   cookieStore: Awaited<ReturnType<typeof cookies>>,
   value: DemoSessionCookie,
 ) {
+  if (!isDemoModeEnabled()) {
+    throw new Error("Demo cookies are disabled in production.");
+  }
+
   cookieStore.set(DEMO_SESSION_COOKIE_NAME, JSON.stringify(value), {
     path: "/",
     httpOnly: true,
     sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 60 * 24 * 30,
   });
 }
@@ -50,6 +55,11 @@ export async function signInAction(
   }
 
   if (!isSupabaseConfigured()) {
+    if (!isDemoModeEnabled()) {
+      return {
+        error: "خدمة المصادقة غير مهيأة حالياً في بيئة الإنتاج. تواصل مع إدارة المنصة.",
+      };
+    }
     const cookieStore = await cookies();
     const current = parseDemoSession(cookieStore.get(DEMO_SESSION_COOKIE_NAME)?.value);
     writeDemoCookieValue(cookieStore, {
@@ -93,6 +103,11 @@ export async function signUpAction(
   }
 
   if (!isSupabaseConfigured()) {
+    if (!isDemoModeEnabled()) {
+      return {
+        error: "خدمة إنشاء الحسابات غير مهيأة حالياً في بيئة الإنتاج. تواصل مع إدارة المنصة.",
+      };
+    }
     const cookieStore = await cookies();
     writeDemoCookieValue(cookieStore, {
       ...DEFAULT_DEMO_COOKIE,
@@ -138,10 +153,8 @@ export async function signOutAction(): Promise<void> {
     await supabase.auth.signOut();
   }
 
-  if (isDemoModeEnabled()) {
-    const cookieStore = await cookies();
-    cookieStore.delete(DEMO_SESSION_COOKIE_NAME);
-  }
+  const cookieStore = await cookies();
+  cookieStore.delete(DEMO_SESSION_COOKIE_NAME);
 
   revalidatePath("/", "layout");
   redirect("/login");

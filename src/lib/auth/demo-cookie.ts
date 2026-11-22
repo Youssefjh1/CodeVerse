@@ -7,6 +7,7 @@ export interface DemoSessionCookie {
   userId: string;
   fullName: string;
   email: string;
+  phone?: string;
   grade: GradeTier;
   role: UserRole;
   avatarFrame: AvatarFrameId;
@@ -16,6 +17,7 @@ export const DEFAULT_DEMO_COOKIE: DemoSessionCookie = {
   userId: "demo-student-01",
   fullName: "يوسف طارق",
   email: "youssef.demo@codeverse.eg",
+  phone: "01019482735",
   grade: "grade_11",
   role: "student",
   avatarFrame: "electric_violet",
@@ -55,6 +57,10 @@ export function parseDemoSession(rawCookieValue: string | undefined): DemoSessio
       typeof parsed.email === "string" && parsed.email.trim().length > 0
         ? parsed.email.trim()
         : DEFAULT_DEMO_COOKIE.email;
+    const phone =
+      typeof parsed.phone === "string" && parsed.phone.trim().length > 0
+        ? parsed.phone.trim()
+        : DEFAULT_DEMO_COOKIE.phone;
     const grade = isValidGrade(parsed.grade) ? parsed.grade : DEFAULT_DEMO_COOKIE.grade;
     const role = isValidRole(parsed.role) ? parsed.role : DEFAULT_DEMO_COOKIE.role;
     const avatarFrame = isValidAvatarFrame(parsed.avatarFrame)
@@ -65,6 +71,7 @@ export function parseDemoSession(rawCookieValue: string | undefined): DemoSessio
       userId,
       fullName,
       email,
+      phone,
       grade,
       role,
       avatarFrame,

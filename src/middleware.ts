@@ -56,6 +56,10 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  if (!demoEnabled && request.cookies.has(DEMO_SESSION_COOKIE_NAME)) {
+    response.cookies.delete(DEMO_SESSION_COOKIE_NAME);
+  }
+
   const demoCookie = demoEnabled
     ? parseDemoSession(request.cookies.get(DEMO_SESSION_COOKIE_NAME)?.value)
     : null;
@@ -71,7 +75,11 @@ export async function middleware(request: NextRequest) {
   if (decision.action === "redirect") {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = decision.location;
-    return NextResponse.redirect(redirectUrl);
+    const redirectResponse = NextResponse.redirect(redirectUrl);
+    for (const cookie of response.cookies.getAll()) {
+      redirectResponse.cookies.set(cookie);
+    }
+    return redirectResponse;
   }
 
   return response;
@@ -79,6 +87,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|monaco/|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

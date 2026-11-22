@@ -8,8 +8,10 @@ import {
   PlaySquare,
   ShieldCheck,
   ShoppingBag,
+  Sparkles,
   Swords,
   Terminal,
+  Ticket,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -29,6 +31,8 @@ const ICON_MAP: Record<NavIconName, typeof LayoutDashboard> = {
   PlaySquare,
   ShoppingBag,
   ShieldCheck,
+  Sparkles,
+  Ticket,
 };
 
 interface CyberSidebarProps {
@@ -126,7 +130,9 @@ export function CyberSidebar({ data }: CyberSidebarProps) {
         {visibleItems.map((item) => {
           const Icon = ICON_MAP[item.iconName];
           const isActive =
-            pathname === item.href || pathname.startsWith(`${item.href}/`);
+            item.href === "/admin"
+              ? pathname === "/admin"
+              : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
           return (
             <Link

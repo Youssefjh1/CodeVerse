@@ -1,17 +1,21 @@
-import { PhasePlaceholder } from "@/components/dashboard/phase-placeholder";
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { CoursesCatalog } from "@/components/courses/courses-catalog";
+import { getCurrentSession } from "@/lib/auth/session";
+import { getCoursesCatalog } from "@/lib/data/phase4-store";
 
-export default function CoursesPage() {
-  return (
-    <PhasePlaceholder
-      phaseLabel="المرحلة 4 — قريباً"
-      titleAr="الكورسات وحصص الفيديو المحمية"
-      descriptionAr="منهج أولى وتانية ثانوي مشروح بالفيديو والتطبيقات العملية مع تتبع التقدم وحماية المحتوى."
-      accent="purple"
-      upcomingFeatures={[
-        "مشغل فيديو بعرض علامة مائية متحركة تحمل اسم الطالب ورقم موبايله.",
-        "ربط كل درس بمهام عملية في ملعب الكود وتحديث شريط التقدم تلقائياً.",
-        "معاينات مجانية مفتوحة للطلبة قبل الاشتراك في الكورس أو الباقة.",
-      ]}
-    />
-  );
+export const metadata: Metadata = {
+  title: "الكورسات والحصص المحمية | CodeVerse",
+  description:
+    "منهج أولى وتانية ثانوي مشروح بالفيديو المحمي بعلامة مائية متحركة مع تطبيقات ملعب الكود.",
+};
+
+export default async function CoursesPage() {
+  const session = await getCurrentSession();
+  if (!session) {
+    redirect("/login");
+  }
+
+  const catalog = await getCoursesCatalog(session);
+  return <CoursesCatalog initialData={catalog} />;
 }

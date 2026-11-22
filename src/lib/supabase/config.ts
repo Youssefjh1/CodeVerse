@@ -18,9 +18,34 @@ export function isSupabaseConfigured(): boolean {
   return getSupabaseEnv() !== null;
 }
 
+export function isProductionEnvironment(): boolean {
+  return process.env.NODE_ENV === "production";
+}
+
 export function isDemoModeEnabled(): boolean {
+  const explicitAllow = process.env.ALLOW_DEMO_MODE === "true";
+  if (isProductionEnvironment()) {
+    return explicitAllow;
+  }
   if (!isSupabaseConfigured()) {
     return true;
   }
-  return process.env.ENABLE_DEMO_MODE === "true";
+  return explicitAllow;
+}
+
+export const SEEDED_TEST_VOUCHER_CODES: ReadonlySet<string> = new Set([
+  "CODEVERSE20",
+  "CODE-TERM-2026",
+  "CODE-ALGO-1100",
+]);
+
+export function areSeededTestVouchersEnabled(): boolean {
+  return isDemoModeEnabled();
+}
+
+export function isBlockedTestVoucherCode(normalizedCode: string): boolean {
+  return (
+    SEEDED_TEST_VOUCHER_CODES.has(normalizedCode) &&
+    !areSeededTestVouchersEnabled()
+  );
 }

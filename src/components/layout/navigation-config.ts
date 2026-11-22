@@ -4,7 +4,9 @@ export type NavIconName =
   | "Swords"
   | "PlaySquare"
   | "ShoppingBag"
-  | "ShieldCheck";
+  | "ShieldCheck"
+  | "Sparkles"
+  | "Ticket";
 
 export interface PlatformNavItem {
   href: string;
@@ -25,28 +27,24 @@ export const PLATFORM_NAV_ITEMS: readonly PlatformNavItem[] = [
   {
     href: "/playground",
     label: "ملعب الكود",
-    phaseTag: "المرحلة 2",
     iconName: "Terminal",
     mobileTab: true,
   },
   {
     href: "/arena",
     label: "ساحة التحديات",
-    phaseTag: "المرحلة 3",
     iconName: "Swords",
     mobileTab: true,
   },
   {
     href: "/courses",
     label: "الكورسات",
-    phaseTag: "المرحلة 4",
     iconName: "PlaySquare",
     mobileTab: true,
   },
   {
     href: "/store",
     label: "المتجر والمذكرات",
-    phaseTag: "المرحلة 4",
     iconName: "ShoppingBag",
     mobileTab: true,
   },
@@ -55,6 +53,22 @@ export const PLATFORM_NAV_ITEMS: readonly PlatformNavItem[] = [
     label: "لوحة الإدارة",
     phaseTag: "إدارة",
     iconName: "ShieldCheck",
+    adminOnly: true,
+    mobileTab: false,
+  },
+  {
+    href: "/admin/ai-engine",
+    label: "محرك الامتحانات AI",
+    phaseTag: "AI",
+    iconName: "Sparkles",
+    adminOnly: true,
+    mobileTab: false,
+  },
+  {
+    href: "/admin/vouchers",
+    label: "الأكواد والشحن",
+    phaseTag: "إدارة",
+    iconName: "Ticket",
     adminOnly: true,
     mobileTab: false,
   },

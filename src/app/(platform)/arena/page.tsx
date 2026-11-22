@@ -1,18 +1,21 @@
-import { PhasePlaceholder } from "@/components/dashboard/phase-placeholder";
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { ArenaHub } from "@/components/arena/arena-hub";
+import { getCurrentSession } from "@/lib/auth/session";
+import { getArenaBootstrapData } from "@/lib/data/phase3-store";
 
-export default function ArenaPage() {
-  return (
-    <PhasePlaceholder
-      phaseLabel="المرحلة 3 — قريباً"
-      titleAr="ساحة التحديات والبطولات (Code & Theory Arena)"
-      descriptionAr="منافسات سريعة في النظري وحل الأخطاء مع لوحة شرف أسبوعية لكل صف دراسي."
-      accent="pink"
-      upcomingFeatures={[
-        "تحدي Fact or Cap لأسئلة مفاهيم علوم الحاسب السريعة.",
-        "مبارزات Debug Duel لاكتشاف الأخطاء وإصلاحها قبل انتهاء الوقت.",
-        "تحدي Output Rush ومباريات 1v1 Flash Blitz عبر Supabase Realtime.",
-        "لوحات شرف منفصلة لكل صف دراسي وموسم أسبوعي.",
-      ]}
-    />
-  );
+export const metadata: Metadata = {
+  title: "ساحة التحديات | CodeVerse",
+  description:
+    "نافس في تحديات حقيقة ولا هبد، Output Rush، Debug Duel، ومبارزات 1v1 Flash Blitz ولوحات الشرف.",
+};
+
+export default async function ArenaPage() {
+  const session = await getCurrentSession();
+  if (!session) {
+    redirect("/login");
+  }
+
+  const bootstrap = await getArenaBootstrapData(session);
+  return <ArenaHub initialData={bootstrap} />;
 }

@@ -138,3 +138,38 @@ body {
     transform: none !important;
   }
 }
+
+/* Monaco Editor active & error line decorations */
+.codeverse-active-line {
+  background: linear-gradient(
+    90deg,
+    rgba(6, 182, 212, 0.2) 0%,
+    rgba(139, 92, 246, 0.14) 100%
+  );
+  border-left: 3px solid #06b6d4;
+}
+
+.codeverse-active-gutter {
+  width: 10px !important;
+  height: 10px !important;
+  margin-top: 5px;
+  margin-left: 5px;
+  border-radius: 999px;
+  background: #06b6d4;
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.95);
+}
+
+.codeverse-error-line {
+  background: rgba(236, 72, 153, 0.2);
+  border-left: 3px solid #ec4899;
+}
+
+.codeverse-error-gutter {
+  width: 10px !important;
+  height: 10px !important;
+  margin-top: 5px;
+  margin-left: 5px;
+  border-radius: 999px;
+  background: #ec4899;
+  box-shadow: 0 0 10px rgba(236, 72, 153, 0.95);
+}

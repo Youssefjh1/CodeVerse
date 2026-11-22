@@ -45,7 +45,7 @@ export function resolveAccessDecision(input: AccessDecisionInput): AccessDecisio
   const isAuthRoute = matchesPrefix(input.pathname, AUTH_ROUTES);
 
   // Strict production/live boundary: demo cookies are completely ignored when demoEnabled is false.
-  if (input.supabaseConfigured && !input.demoEnabled) {
+  if (!input.demoEnabled) {
     if (isAuthRoute && input.supabaseUser) {
       return { action: "redirect", location: "/dashboard" };
     }
@@ -58,7 +58,7 @@ export function resolveAccessDecision(input: AccessDecisionInput): AccessDecisio
     return { action: "allow" };
   }
 
-  // Demo Mode fallback (local testing when Supabase isn't configured or explicit ENABLE_DEMO_MODE=true).
+  // Demo Mode fallback (local testing when Supabase isn't configured in non-production, or explicit ALLOW_DEMO_MODE=true).
   const activeRole = input.supabaseUser?.role ?? input.demoCookie?.role ?? DEFAULT_DEMO_COOKIE.role;
   if (isAdminRoute && activeRole !== "admin") {
     return { action: "redirect", location: "/dashboard" };
@@ -80,7 +80,7 @@ export async function getCurrentSession(): Promise<UserSession | null> {
     if (user) {
       const { data: profile } = await supabase
         .from("users")
-        .select("id, full_name, email, grade, role, avatar_frame")
+        .select("id, full_name, email, phone, grade, role, avatar_frame")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -90,12 +90,17 @@ export async function getCurrentSession(): Promise<UserSession | null> {
         (typeof metadata.full_name === "string" && metadata.full_name.trim()) ||
         user.email?.split("@")[0] ||
         "بطل CodeVerse";
+      const phone =
+        profile?.phone ||
+        (typeof metadata.phone === "string" && metadata.phone.trim()) ||
+        "01000000000";
 
       return {
         mode: "supabase",
         userId: user.id,
         fullName,
         email: profile?.email ?? user.email ?? "",
+        phone,
         grade: isValidGrade(profile?.grade)
           ? profile.grade
           : isValidGrade(metadata.grade)
@@ -125,6 +130,7 @@ export async function getCurrentSession(): Promise<UserSession | null> {
     userId: demo.userId,
     fullName: demo.fullName,
     email: demo.email,
+    phone: demo.phone ?? "01019482735",
     grade: demo.grade,
     role: demo.role,
     avatarFrame: demo.avatarFrame,

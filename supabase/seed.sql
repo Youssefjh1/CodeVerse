@@ -148,7 +148,57 @@ and not exists (
   select 1 from public.package_items pi where pi.package_id = p.id and pi.course_id = c.id
 );
 
+-- Test/promo voucher for dev & staging environments; strictly blocked in production
+-- unless ALLOW_DEMO_MODE=true is explicitly set.
 insert into public.vouchers (code, discount_type, discount_value, applies_to, max_uses, is_active)
 values
   ('CODEVERSE20', 'percent', 20.00, 'all', 250, true)
 on conflict (code) do nothing;
+
+-- ============================================================================
+-- Phase 3 Starter Questions Bank (idempotent without synthetic auth.users)
+-- ============================================================================
+insert into public.questions_bank (
+  grade, topic, question_type, prompt_ar, code_snippet, language,
+  options_json, correct_answer, explanation_ar, difficulty, source_pdf_name, ai_generated, is_approved
+)
+select
+  'grade_10', 'أساسيات بايثون', 'fact_or_cap',
+  'في لغة بايثون، نتيجة تنفيذ expression: type(10 / 2) هي float وليست int.',
+  'print(type(10 / 2))', 'python',
+  '["حقيقة", "هبد"]'::jsonb, 'حقيقة',
+  'القسمة العادية `/` في Python تعيد دائماً عدداً عشرياً (float) مثل 5.0، بينما `//` تعيد عدداً صحيحاً.',
+  'easy', 'seed-curriculum.pdf', false, true
+where not exists (
+  select 1 from public.questions_bank where topic = 'أساسيات بايثون' and question_type = 'fact_or_cap'
+);
+
+insert into public.questions_bank (
+  grade, topic, question_type, prompt_ar, code_snippet, language,
+  options_json, correct_answer, explanation_ar, difficulty, source_pdf_name, ai_generated, is_approved
+)
+select
+  'grade_11', 'الخوارزميات', 'output_rush',
+  'ما المخرج النهائي للكود التالي؟',
+  E'nums = [2, 4, 6]\nprint(sum(nums) // len(nums))', 'python',
+  '["4", "6", "12", "3"]'::jsonb, '4',
+  'مجموع العناصر 12 وعددها 3، وبالتالي 12 // 3 يساوي 4.',
+  'medium', 'seed-curriculum.pdf', false, true
+where not exists (
+  select 1 from public.questions_bank where topic = 'الخوارزميات' and question_type = 'output_rush'
+);
+
+insert into public.questions_bank (
+  grade, topic, question_type, prompt_ar, code_snippet, language,
+  options_json, correct_answer, explanation_ar, difficulty, source_pdf_name, ai_generated, is_approved
+)
+select
+  'grade_10', 'تمثيل البيانات', 'mcq',
+  'كم بت (Bit) يوجد في 2 بايت (Byte)؟',
+  null, 'pseudocode',
+  '["8 بت", "16 بت", "32 بت", "4 بت"]'::jsonb, '16 بت',
+  'كل 1 بايت يتكون من 8 بت، إذن 2 بايت = 16 بت.',
+  'easy', 'seed-curriculum.pdf', false, true
+where not exists (
+  select 1 from public.questions_bank where topic = 'تمثيل البيانات' and question_type = 'mcq'
+);

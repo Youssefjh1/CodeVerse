@@ -21,3 +21,6 @@ next-env.d.ts
 
 # sdd scratch
 /.superpowers/
+
+# monaco vendor assets synced from node_modules
+/public/monaco/
